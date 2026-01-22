@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>Happy Birthday 💖</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif}
+
+body{
+    background:linear-gradient(270deg,#3A4F2A,#7A8450,#556B2F);
+    background-size:600% 600%;
+    animation:bgMove 20s ease infinite;
+    overflow:hidden;
+}
+
+@keyframes bgMove{
+    0%{background-position:0% 50%}
+    50%{background-position:100% 50%}
+    100%{background-position:0% 50%}
+}
+
+/* START SCREEN */
+#startScreen{
+    position:fixed;inset:0;
+    background:rgba(0,0,0,.8);
+    display:flex;justify-content:center;align-items:center;
+    color:#fff;z-index:9999;
+    cursor:pointer;text-align:center;
+}
+#startScreen p{animation:pulse 1.5s infinite}
+
+/* SLIDER */
+.slider{display:flex;width:400vw;height:100vh;transition:.8s}
+.slide{
+    width:100vw;height:100vh;
+    display:flex;flex-direction:column;
+    justify-content:center;align-items:center;
+    text-align:center;color:#fff;
+    padding:24px;position:relative;
+    z-index:2;
+}
+
+/* TEXT */
+h1{font-size:1.9em;margin-bottom:14px}
+p{font-size:1.05em;line-height:1.6;max-width:90%}
+
+/* PHOTO */
+.photo{
+    width:180px;height:180px;
+    border-radius:50%;
+    border:6px solid white;
+    object-fit:cover;margin-bottom:16px;
+    animation:glow 3s infinite;
+}
+
+/* FIREWORK CANVAS */
+#fireworks{
+    position:fixed;
+    inset:0;
+    z-index:1;
+    pointer-events:none;
+}
+
+/* NAV */
+.nav{
+    position:absolute;bottom:90px;
+    width:100%;display:flex;
+    justify-content:space-between;
+    padding:0 26px;
+    z-index:5;
+}
+.nav button{
+    width:46px;height:46px;
+    border-radius:50%;
+    border:none;font-size:1.4em;
+    background:rgba(255,255,255,.85);
+}
+
+/* TEXTAREA */
+textarea{
+    width:100%;max-width:90%;
+    height:120px;border-radius:14px;
+    border:none;padding:14px;
+}
+button{
+    padding:12px 24px;
+    border-radius:30px;border:none;
+    margin-top:10px;
+    animation:pulse 2s infinite;
+}
+
+/* CREDIT */
+.credit{
+    position:fixed;
+    bottom:14px;width:100%;
+    text-align:center;
+    font-size:.75em;
+    color:rgba(255,255,255,.65);
+    z-index:6;
+    pointer-events:none;
+}
+
+/* ANIM */
+@keyframes pulse{50%{opacity:.6;transform:scale(1.05)}}
+@keyframes glow{50%{box-shadow:0 0 25px #fff}}
+</style>
+</head>
+
+<body>
+
+<canvas id="fireworks"></canvas>
+
+<div id="startScreen">
+  <p>Tap untuk mulai 🎆</p>
+</div>
+
+<audio id="bgMusic" loop preload="auto">
+  <source src="Birthday.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+/* DATA */
+const namaDia = "Mila";
+const fotoDia = "Mila 1.jpg";
+const nomorWA = "6285695195887";
+const BPM = 100; // 🔥 UBAH SESUAI MUSIK
+</script>
+
+<div class="slider" id="slider">
+
+<section class="slide 1">
+<h1>🎉 Happy Birthday, <span id="nama"></span> 🎉</h1>
+<p>Semoga bahagiamu selalu datang lebih dulu dari lelahmu.</p>
+</section>
+
+<section class="slide 2">
+<img class="photo" id="foto">
+<p>Tanpa label, tanpa rencana besar, tapi cukup untuk membuat senyum datang lebih mudah.</p>
+</section>
+
+<section class="slide 3">
+<h1>✨ Harapan ✨</h1>
+<p>Semoga hidup selalu memperlakukanmu dengan lembut, seperti caramu hadir tanpa pernah memaksa apa pun.</p>
+<p>Dan di mana pun langkahmu berhenti nanti, semoga kamu selalu merasa cukup, tenang, dan dihargai.</p>
+</section>
+
+<section class="slide 4">
+<h1>💌 Balasan darimu 💌</h1>
+<textarea id="pesan" placeholder="Tulis balasanmu di sini..."></textarea>
+<button onclick="kirimWA()">Kirim ke WhatsApp</button>
+</section>
+
+</div>
+
+<div class="nav">
+<button onclick="prev()">‹</button>
+<button onclick="next()">›</button>
+</div>
+
+<div class="credit">
+dibuat oleh <strong>Fazha</strong> — your ... ✨
+</div>
+
+<script>
+document.getElementById("nama").innerText = namaDia;
+document.getElementById("foto").src = fotoDia;
+
+/* SLIDER */
+let index=0,slider=document.getElementById("slider");
+function next(){if(index<3)index++;slider.style.transform=`translateX(-${index*100}vw)`;}
+function prev(){if(index>0)index--;slider.style.transform=`translateX(-${index*100}vw)`;}
+
+/* WHATSAPP */
+function kirimWA() {
+    const pesan = document.getElementById("pesan").value.trim();
+    if (!pesan) return alert("Tulis pesan dulu ya");
+
+    const text = `Balasan ulang tahun dari ${namaDia}:\n\n"${pesan}"`;
+    window.open(`https://wa.me/${nomorWA}?text=${encodeURIComponent(text)}`, "_blank");
+}
+
+/* MUSIC */
+const music=document.getElementById("bgMusic");
+document.getElementById("startScreen").onclick=()=>{
+ music.play();
+ startScreen.style.display="none";
+ startFireworks();
+};
+
+/* FIREWORK ENGINE */
+const canvas=document.getElementById("fireworks");
+const ctx=canvas.getContext("2d");
+canvas.width=innerWidth;canvas.height=innerHeight;
+
+window.onresize=()=>{canvas.width=innerWidth;canvas.height=innerHeight;}
+
+let particles=[];
+
+function explode(){
+ const x=Math.random()*canvas.width;
+ const y=Math.random()*canvas.height*0.6;
+ for(let i=0;i<40;i++){
+   particles.push({
+     x,y,
+     r:Math.random()*2+1,
+     vx:(Math.random()-.5)*6,
+     vy:(Math.random()-.5)*6,
+     life:60
+   });
+ }
+}
+
+function draw(){
+ ctx.clearRect(0,0,canvas.width,canvas.height);
+ particles.forEach((p,i)=>{
+   p.x+=p.vx;
+   p.y+=p.vy;
+   p.life--;
+   ctx.fillStyle="rgba(255,255,255,.8)";
+   ctx.beginPath();
+   ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+   ctx.fill();
+   if(p.life<=0)particles.splice(i,1);
+ });
+ requestAnimationFrame(draw);
+}
+
+function startFireworks(){
+ draw();
+ const interval = 60000 / BPM;
+ setInterval(explode, interval);
+}
+</script>
+
+</body>
+</html>
